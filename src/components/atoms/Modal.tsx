@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import Button from './Button';
 
 interface ModalProps {
   open: boolean;
@@ -11,7 +12,6 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({ open, onClose, children, title, widthClass = 'max-w-md' }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // Cerrar con Esc
   useEffect(() => {
     if (!open) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -21,7 +21,6 @@ const Modal: React.FC<ModalProps> = ({ open, onClose, children, title, widthClas
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [open, onClose]);
 
-  // Cerrar al hacer clic fuera
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (modalRef.current && e.target === modalRef.current) {
       onClose();
@@ -37,13 +36,14 @@ const Modal: React.FC<ModalProps> = ({ open, onClose, children, title, widthClas
       onClick={handleOverlayClick}
     >
       <div className={`bg-white rounded-lg shadow-lg p-8 w-full relative ${widthClass}`}>
-        <button
-          className="absolute top-3 right-3 text-gray-400 hover:text-black"
+        <Button
+          variant="ghost"
+          className="absolute top-3 right-3 text-gray-400 hover:text-black p-1 text-xl"
           onClick={onClose}
           aria-label="Cerrar"
         >
           ×
-        </button>
+        </Button>
         {title && <h3 className="text-xl font-bold mb-6">{title}</h3>}
         {children}
       </div>

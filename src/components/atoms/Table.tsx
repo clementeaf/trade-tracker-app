@@ -1,12 +1,5 @@
 import React from 'react';
-import type { TableColumn } from './types';
-
-interface TableProps<T> {
-  columns: TableColumn<T>[];
-  data: T[];
-  rowKey?: (row: T, index: number) => React.Key;
-  className?: string;
-}
+import type { TableProps } from './types';
 
 function Table<T>({ columns, data, rowKey, className = '' }: TableProps<T>) {
   return (
