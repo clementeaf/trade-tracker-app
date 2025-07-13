@@ -1,22 +1,27 @@
 
 
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import Trades from './pages/Trades';
 import Estadisticas from './pages/Estadisticas';
+import Dashboard from './components/organisms/Dashboard';
+import { useTrades } from './hooks/useTrades';
 
-function App() {
+const App = () => {
+  const { trades } = useTrades();
+
   return (
-    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <Router>
       <Layout>
         <Routes>
-          <Route path="/" element={<Navigate to="/trades" replace />} />
+          <Route path="/" element={<Trades />} />
           <Route path="/trades" element={<Trades />} />
           <Route path="/estadisticas" element={<Estadisticas />} />
+          <Route path="/dashboard" element={<Dashboard trades={trades} />} />
         </Routes>
       </Layout>
-    </BrowserRouter>
+    </Router>
   );
-}
+};
 
 export default App;
