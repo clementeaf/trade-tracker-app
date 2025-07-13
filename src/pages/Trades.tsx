@@ -5,39 +5,13 @@ import { Trade as TradeModel } from '../models/Trade';
 import Modal from '../components/atoms/Modal';
 import Button from '../components/atoms/Button';
 import Input from '../components/atoms/Input';
-
-const initialTrades: Trade[] = [
-  {
-    nro: 1,
-    par: 'BTC/USDT',
-    precioApertura: 65000,
-    takeProfit: 67000,
-    stopLoss: 64000,
-    fechaApertura: '2024-07-15 09:00',
-    fechaCierre: '2024-07-15 15:30',
-    motivoCierre: 'Take Profit alcanzado',
-  },
-  {
-    nro: 2,
-    par: 'ETH/USDT',
-    precioApertura: 3500,
-    takeProfit: 3700,
-    stopLoss: 3400,
-    fechaApertura: '2024-07-16 10:15',
-    fechaCierre: '2024-07-16 13:45',
-    motivoCierre: 'Stop Loss alcanzado',
-  },
-];
+import { initialTrades, initialForm, formFields } from './utils';
+import { createTradeFromForm } from './functions';
 
 const Trades = () => {
   const [trades, setTrades] = useState<Trade[]>(initialTrades);
   const [modalOpen, setModalOpen] = useState(false);
-  const [form, setForm] = useState({
-    par: '',
-    precioApertura: '',
-    takeProfit: '',
-    stopLoss: '',
-  });
+  const [form, setForm] = useState(initialForm);
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -49,35 +23,23 @@ const Trades = () => {
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
-    // Validación usando el modelo Trade
     const validation = TradeModel.validate({
       par: form.par,
       precioApertura: Number(form.precioApertura),
       takeProfit: Number(form.takeProfit),
       stopLoss: Number(form.stopLoss),
     });
-    if (validation) {
-      setErrorMsg(validation);
-      return;
-    }
+    if (validation) return setErrorMsg(validation);
     try {
-      const nro = trades.length > 0 ? Math.max(...trades.map(t => t.nro)) + 1 : 1;
-      const newTrade = TradeModel.create({
-        par: form.par,
-        precioApertura: Number(form.precioApertura),
-        takeProfit: Number(form.takeProfit),
-        stopLoss: Number(form.stopLoss),
-        fechaCierre: undefined,
-        motivoCierre: undefined,
-      }, nro);
+      const newTrade = createTradeFromForm(form, trades);
       setTrades([...trades, newTrade]);
       setSuccessMsg('¡Operación guardada con éxito!');
-      setForm({ par: '', precioApertura: '', takeProfit: '', stopLoss: '' });
+      setForm(initialForm);
       setTimeout(() => {
         setSuccessMsg('');
         setModalOpen(false);
       }, 1500);
-    } catch (err) {
+    } catch {
       setErrorMsg('Ocurrió un error inesperado al guardar.');
     }
   };
@@ -104,37 +66,17 @@ const Trades = () => {
           </div>
         )}
         <form onSubmit={handleAddTrade} className="space-y-4">
-          <Input
-            label="Par"
-            name="par"
-            value={form.par}
-            onChange={handleChange}
-            required
-          />
-          <Input
-            label="Precio Apertura"
-            name="precioApertura"
-            type="number"
-            value={form.precioApertura}
-            onChange={handleChange}
-            required
-          />
-          <Input
-            label="Take Profit"
-            name="takeProfit"
-            type="number"
-            value={form.takeProfit}
-            onChange={handleChange}
-            required
-          />
-          <Input
-            label="Stop Loss"
-            name="stopLoss"
-            type="number"
-            value={form.stopLoss}
-            onChange={handleChange}
-            required
-          />
+          {formFields.map((field) => (
+            <Input
+              key={field.name}
+              label={field.label}
+              name={field.name}
+              type={field.type}
+              value={form[field.name]}
+              onChange={handleChange}
+              required={field.required}
+            />
+          ))}
           <div className="pt-2 flex justify-end gap-2">
             <Button type="button" variant="secondary" onClick={() => setModalOpen(false)}>
               Cancelar
