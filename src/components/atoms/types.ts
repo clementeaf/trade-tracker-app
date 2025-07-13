@@ -10,4 +10,8 @@ export interface TableProps<T> {
   data: T[];
   rowKey?: (row: T, index: number) => React.Key;
   className?: string;
+}
+
+export interface ColumnMeta {
+  className?: string;
 } 
