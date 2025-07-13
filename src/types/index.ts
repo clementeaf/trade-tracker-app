@@ -1,5 +1,4 @@
 import type { Trade } from '../models/Trade';
-import type { FilterOptions } from '../components/molecules/AdvancedFilters';
 import { initialForm } from '../pages/utils';
 
 // Tipos para el Dashboard
@@ -24,7 +23,7 @@ export interface TradesState {
     successMsg: string;
     errorMsg: string;
   };
-  filters: FilterOptions;
+  filters: {};
 }
 
 export type TradesAction = 
@@ -35,14 +34,8 @@ export type TradesAction =
   | { type: 'SET_SUCCESS_MSG'; payload: string }
   | { type: 'SET_ERROR_MSG'; payload: string }
   | { type: 'CLEAR_MESSAGES' }
-  | { type: 'UPDATE_FILTERS'; payload: FilterOptions }
+  | { type: 'UPDATE_FILTERS'; payload: any }
   | { type: 'CLEAR_FILTERS' };
-
-// Tipos para filtros
-export interface FilterDisplayItem {
-  key: string;
-  value: string;
-}
 
 // Tipos para estadísticas
 export interface TradeStats {

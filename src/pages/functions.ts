@@ -1,7 +1,6 @@
 import type { Trade } from '../models/Trade';
 import { Trade as TradeModel } from '../models/Trade';
-import type { FilterOptions } from '../components/molecules/AdvancedFilters';
-import type { TradesState, TradesAction, FilterDisplayItem, Widget, TradeStats } from '../types';
+import type { TradesState, TradesAction, Widget, TradeStats } from '../types';
 import { initialForm } from './utils';
 import { formatCurrency, formatPercentage } from '../utils/statsUtils';
 
@@ -37,18 +36,7 @@ export const getAvailablePars = (trades: Trade[]): string[] => {
   return Array.from(pars).sort();
 };
 
-export const hasActiveFilters = (filters: FilterOptions): boolean => {
-  return Object.keys(filters).length > 0;
-};
-
-export const formatFilterDisplay = (filters: FilterOptions): FilterDisplayItem[] => {
-  return Object.entries(filters).map(([key, value]) => ({
-    key,
-    value: String(value),
-  }));
-};
-
-// Tipos para resultados de renderizado
+// --- RESTAURADO: Renderizado de widgets para Dashboard ---
 export interface MetricWidgetResult {
   value: string | number;
   color: string;
@@ -60,7 +48,6 @@ export interface ListWidgetResult {
   title: string;
 }
 
-// Funciones de renderizado de widgets
 export const renderMetricWidget = (widget: Widget, stats: TradeStats): MetricWidgetResult => {
   const { metric } = widget.config;
   let value: string | number = '';
@@ -119,6 +106,29 @@ export const renderWidget = (widget: Widget, stats: TradeStats, trades: Trade[])
       return null;
   }
 };
+// --- FIN RESTAURADO ---
+
+// --- Funciones de cálculo para RiskCalculator ---
+
+export function calculateCurrentCapital(trades: Trade[], capital: number): number {
+  const closedTrades = trades.filter(trade => trade.fechaCierre);
+  const totalProfit = closedTrades.reduce((sum, trade) => {
+    const entryPrice = trade.precioApertura;
+    const takeProfit = trade.takeProfit;
+    const stopLoss = trade.stopLoss;
+    // Estimación: 50% éxito, 50% pérdida
+    const estimatedProfit = (takeProfit - entryPrice) * 0.5 + (stopLoss - entryPrice) * 0.5;
+    return sum + estimatedProfit;
+  }, 0);
+  return capital + totalProfit;
+}
+
+export function getRiskStats(trades: Trade[]) {
+  const closedTrades = trades.filter(trade => trade.fechaCierre);
+  const openTrades = trades.filter(trade => !trade.fechaCierre);
+  const totalTrades = trades.length;
+  return { closedTrades, openTrades, totalTrades };
+}
 
 // Trades Reducer
 export const initialState: TradesState = {
