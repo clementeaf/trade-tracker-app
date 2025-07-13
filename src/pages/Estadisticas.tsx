@@ -40,27 +40,29 @@ const Estadisticas = () => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold">Estadísticas</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-bold">Estadísticas</h2>
+      </div>
       
       {/* Resumen de métricas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white p-6 rounded-lg border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-700">Total Operaciones</h3>
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">Total Operaciones</h3>
           <p className="text-3xl font-bold">{stats.totalTrades}</p>
         </div>
         
         <div className="bg-white p-6 rounded-lg border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-700">Operaciones Cerradas</h3>
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">Operaciones Cerradas</h3>
           <p className="text-3xl font-bold">{stats.closedTrades}</p>
         </div>
         
         <div className="bg-white p-6 rounded-lg border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-700">Win Rate</h3>
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">Win Rate</h3>
           <p className="text-3xl font-bold text-green-600">{formatPercentage(stats.winRate)}</p>
         </div>
         
         <div className="bg-white p-6 rounded-lg border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-700">Profit Total</h3>
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">Profit Total</h3>
           <p className={`text-3xl font-bold ${stats.totalProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             {formatCurrency(stats.totalProfit)}
           </p>

@@ -8,12 +8,10 @@ export const useTrades = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Cargar trades al inicializar
   useEffect(() => {
     try {
       const storedTrades = storageUtils.getTrades();
       
-      // Si no hay trades guardados, usar los iniciales
       if (storedTrades.length === 0) {
         storageUtils.saveTrades(initialTrades);
         setTrades(initialTrades);
@@ -28,7 +26,6 @@ export const useTrades = () => {
     }
   }, []);
 
-  // Guardar trades automáticamente cuando cambien
   useEffect(() => {
     if (!loading) {
       storageUtils.saveTrades(trades);

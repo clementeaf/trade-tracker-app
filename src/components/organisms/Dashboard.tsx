@@ -1,20 +1,8 @@
 import React, { useState } from 'react';
-import type { Trade } from '../../models/Trade';
-import { calculateTradeStats, formatCurrency, formatPercentage } from '../../utils/statsUtils';
+import type { Widget, DashboardProps } from '../../types';
+import { calculateTradeStats, formatCurrency } from '../../utils/statsUtils';
+import { renderWidget, type MetricWidgetResult, type ListWidgetResult } from '../../pages/functions';
 import Button from '../atoms/Button';
-
-interface Widget {
-  id: string;
-  type: 'metric' | 'chart' | 'list';
-  title: string;
-  config: any;
-  position: { x: number; y: number };
-  size: { width: number; height: number };
-}
-
-interface DashboardProps {
-  trades: Trade[];
-}
 
 const Dashboard: React.FC<DashboardProps> = ({ trades }) => {
   const [widgets, setWidgets] = useState<Widget[]>([
@@ -55,53 +43,28 @@ const Dashboard: React.FC<DashboardProps> = ({ trades }) => {
   const stats = calculateTradeStats(trades);
 
   const renderMetricWidget = (widget: Widget) => {
-    const { metric } = widget.config;
-    let value: string | number = '';
-    let color = 'text-gray-900';
+    const result = renderWidget(widget, stats, trades);
+    if (!result || widget.type !== 'metric') return null;
 
-    switch (metric) {
-      case 'totalTrades':
-        value = stats.totalTrades;
-        break;
-      case 'closedTrades':
-        value = stats.closedTrades;
-        break;
-      case 'openTrades':
-        value = stats.openTrades;
-        break;
-      case 'winRate':
-        value = formatPercentage(stats.winRate);
-        color = 'text-green-600';
-        break;
-      case 'totalProfit':
-        value = formatCurrency(stats.totalProfit);
-        color = stats.totalProfit >= 0 ? 'text-green-600' : 'text-red-600';
-        break;
-      case 'averageProfit':
-        value = formatCurrency(stats.averageProfit);
-        color = stats.averageProfit >= 0 ? 'text-green-600' : 'text-red-600';
-        break;
-    }
-
+    const metricResult = result as MetricWidgetResult;
     return (
       <div className="bg-white p-6 rounded-lg border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-700 mb-2">{widget.title}</h3>
-        <p className={`text-3xl font-bold ${color}`}>{value}</p>
+        <h3 className="text-lg font-semibold text-gray-700 mb-2">{metricResult.title}</h3>
+        <p className={`text-3xl font-bold ${metricResult.color}`}>{metricResult.value}</p>
       </div>
     );
   };
 
   const renderListWidget = (widget: Widget) => {
-    const { limit } = widget.config;
-    const recentTrades = trades
-      .sort((a, b) => new Date(b.fechaApertura).getTime() - new Date(a.fechaApertura).getTime())
-      .slice(0, limit);
+    const result = renderWidget(widget, stats, trades);
+    if (!result || widget.type !== 'list') return null;
 
+    const listResult = result as ListWidgetResult;
     return (
       <div className="bg-white p-6 rounded-lg border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-700 mb-4">{widget.title}</h3>
+        <h3 className="text-lg font-semibold text-gray-700 mb-4">{listResult.title}</h3>
         <div className="space-y-3">
-          {recentTrades.map(trade => (
+          {listResult.trades.map(trade => (
             <div key={trade.nro} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
               <div>
                 <p className="font-semibold">{trade.par}</p>
@@ -122,7 +85,7 @@ const Dashboard: React.FC<DashboardProps> = ({ trades }) => {
     );
   };
 
-  const renderWidget = (widget: Widget) => {
+  const renderWidgetComponent = (widget: Widget) => {
     switch (widget.type) {
       case 'metric':
         return renderMetricWidget(widget);
@@ -158,10 +121,10 @@ const Dashboard: React.FC<DashboardProps> = ({ trades }) => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {widgets.map(widget => (
           <div key={widget.id} className="relative">
-            {renderWidget(widget)}
+            {renderWidgetComponent(widget)}
             <button
               onClick={() => removeWidget(widget.id)}
               className="absolute top-2 right-2 text-gray-400 hover:text-red-500 text-lg"

@@ -11,7 +11,7 @@ const App = () => {
   const { trades } = useTrades();
 
   return (
-    <Router>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Layout>
         <Routes>
           <Route path="/" element={<Trades />} />
