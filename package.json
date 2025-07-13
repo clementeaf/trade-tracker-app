@@ -16,7 +16,11 @@
     "test:ui": "vitest --ui",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "e2e": "cypress open"
+    "e2e": "cypress open",
+    "deploy": "./scripts/deploy.sh",
+    "deploy:prod": "./scripts/deploy.sh --prod",
+    "vercel": "vercel",
+    "vercel:prod": "vercel --prod"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.83.0",

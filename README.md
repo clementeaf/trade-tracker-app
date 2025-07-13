@@ -69,7 +69,39 @@ npm run lint:fix         # Corregir errores de ESLint
 npm run format           # Formatear código con Prettier
 npm run format:check     # Verificar formato
 npm run type-check       # Verificar tipos de TypeScript
+
+# Testing
+npm run test             # Ejecutar tests
+npm run test:watch       # Tests en modo watch
+npm run test:coverage    # Tests con cobertura
+npm run test:ui          # Tests con interfaz visual
+
+# Despliegue
+npm run deploy           # Despliegue preview
+npm run deploy:prod      # Despliegue a producción
+npm run vercel           # Despliegue directo con Vercel CLI
+npm run vercel:prod      # Despliegue a producción con Vercel CLI
 ```
+
+## 🚀 Despliegue Automático
+
+El proyecto está configurado para despliegue automático a Vercel con CI/CD.
+
+### Despliegue Rápido
+```bash
+# Despliegue preview
+npm run deploy
+
+# Despliegue a producción
+npm run deploy:prod
+```
+
+### Configuración Automática
+- **GitHub Actions:** Despliegue automático en push a main
+- **Preview Deployments:** Cada PR genera un preview único
+- **Tests Automáticos:** Ejecución de tests antes del despliegue
+
+Para más detalles, consulta [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## 🎯 Demostración
 
@@ -111,6 +143,11 @@ trade-tracker-app/
 │   ├── utils/dateUtils.ts
 │   ├── App.tsx
 │   └── main.tsx
+├── scripts/
+│   └── deploy.sh        # Script de despliegue
+├── .github/workflows/
+│   └── deploy.yml       # GitHub Actions workflow
+├── vercel.json          # Configuración de Vercel
 ├── tailwind.config.js
 ├── postcss.config.js
 ├── .eslintrc.cjs
