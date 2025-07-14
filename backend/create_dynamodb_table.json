@@ -1,0 +1,49 @@
+{
+  "TableName": "trade-tracker-trades",
+  "KeySchema": [
+    {
+      "AttributeName": "id",
+      "KeyType": "HASH"
+    }
+  ],
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "id",
+      "AttributeType": "N"
+    },
+    {
+      "AttributeName": "par",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "fecha_apertura",
+      "AttributeType": "S"
+    }
+  ],
+  "GlobalSecondaryIndexes": [
+    {
+      "IndexName": "par-index",
+      "KeySchema": [
+        {
+          "AttributeName": "par",
+          "KeyType": "HASH"
+        },
+        {
+          "AttributeName": "fecha_apertura",
+          "KeyType": "RANGE"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 5,
+        "WriteCapacityUnits": 5
+      }
+    }
+  ],
+  "ProvisionedThroughput": {
+    "ReadCapacityUnits": 5,
+    "WriteCapacityUnits": 5
+  }
+} 

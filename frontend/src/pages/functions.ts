@@ -31,7 +31,12 @@ export const createTradeFromForm = (form: typeof initialForm, trades: Trade[]): 
 };
 
 // Funciones de utilidad para trades
-export const getAvailablePars = (trades: Trade[]): string[] => {
+export const getAvailablePars = (trades: any[]): string[] => {
+  // Verificar que trades sea un array válido
+  if (!trades || !Array.isArray(trades)) {
+    console.warn('getAvailablePars: trades no es un array válido:', trades);
+    return [];
+  }
   const pars = new Set(trades.map(t => t.par));
   return Array.from(pars).sort();
 };
@@ -110,7 +115,13 @@ export const renderWidget = (widget: Widget, stats: TradeStats, trades: Trade[])
 
 // --- Funciones de cálculo para RiskCalculator ---
 
-export function calculateCurrentCapital(trades: Trade[], capital: number): number {
+export function calculateCurrentCapital(trades: any[], capital: number): number {
+  // Verificar que trades sea un array válido
+  if (!trades || !Array.isArray(trades)) {
+    console.warn('calculateCurrentCapital: trades no es un array válido:', trades);
+    return capital;
+  }
+  
   const closedTrades = trades.filter(trade => trade.fechaCierre);
   const totalProfit = closedTrades.reduce((sum, trade) => {
     const entryPrice = trade.precioApertura;
@@ -123,7 +134,13 @@ export function calculateCurrentCapital(trades: Trade[], capital: number): numbe
   return capital + totalProfit;
 }
 
-export function getRiskStats(trades: Trade[]) {
+export function getRiskStats(trades: any[]) {
+  // Verificar que trades sea un array válido
+  if (!trades || !Array.isArray(trades)) {
+    console.warn('getRiskStats: trades no es un array válido:', trades);
+    return { closedTrades: [], openTrades: [], totalTrades: 0 };
+  }
+  
   const closedTrades = trades.filter(trade => trade.fechaCierre);
   const openTrades = trades.filter(trade => !trade.fechaCierre);
   const totalTrades = trades.length;

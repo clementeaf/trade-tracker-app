@@ -7,6 +7,8 @@ export interface TradeProps {
   fechaApertura: string;
   fechaCierre?: string;
   motivoCierre?: string;
+  observaciones?: string;
+  imagenes?: string[]; // URLs de las imágenes en S3
 }
 
 export class Trade {
@@ -18,6 +20,8 @@ export class Trade {
   fechaApertura: string;
   fechaCierre?: string;
   motivoCierre?: string;
+  observaciones?: string;
+  imagenes?: string[];
 
   constructor(props: TradeProps) {
     this.nro = props.nro;
@@ -28,6 +32,8 @@ export class Trade {
     this.fechaApertura = props.fechaApertura;
     this.fechaCierre = props.fechaCierre;
     this.motivoCierre = props.motivoCierre;
+    this.observaciones = props.observaciones;
+    this.imagenes = props.imagenes || [];
   }
 
   static validate(props: Partial<TradeProps>): string | null {
@@ -45,6 +51,7 @@ export class Trade {
       nro,
       ...props,
       fechaApertura,
+      imagenes: props.imagenes || [],
     });
   }
 } 

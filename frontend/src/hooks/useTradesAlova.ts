@@ -1,35 +1,38 @@
 import { useState, useEffect, useCallback } from 'react';
-import { tradeService, type Trade, type CreateTradeRequest } from '../services/tradeService';
+import { tradeService } from '../services/tradeService';
+import type { Trade, CreateTradeRequest, UpdateTradeRequest } from '../services/tradeService';
 
-export const useTrades = () => {
+export const useTradesAlova = () => {
   const [trades, setTrades] = useState<Trade[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Cargar trades desde la API
+  // Cargar trades desde el backend
   const loadTrades = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      const fetchedTrades = await tradeService.getTrades();
-      setTrades(fetchedTrades);
+      const tradesData = await tradeService.getTrades();
+      setTrades(tradesData);
     } catch (err) {
-      setError('Error al cargar los trades desde la API');
+      setError('Error al cargar los trades desde el backend');
       console.error('Error loading trades:', err);
     } finally {
       setLoading(false);
     }
   }, []);
 
+  // Cargar trades al montar el componente
   useEffect(() => {
     loadTrades();
   }, [loadTrades]);
 
+  // Crear nuevo trade
   const addTrade = useCallback(async (tradeData: CreateTradeRequest) => {
     try {
       setError(null);
       const newTrade = await tradeService.createTrade(tradeData);
-      setTrades(prev => [newTrade, ...prev]); // Agregar al inicio
+      setTrades(prev => [...prev, newTrade]);
       return newTrade;
     } catch (err) {
       setError('Error al crear el trade');
@@ -38,7 +41,8 @@ export const useTrades = () => {
     }
   }, []);
 
-  const updateTrade = useCallback(async (tradeId: number, updates: Partial<Trade>) => {
+  // Actualizar trade
+  const updateTrade = useCallback(async (tradeId: number, updates: UpdateTradeRequest) => {
     try {
       setError(null);
       const updatedTrade = await tradeService.updateTrade(tradeId, updates);
@@ -53,6 +57,7 @@ export const useTrades = () => {
     }
   }, []);
 
+  // Eliminar trade
   const deleteTrade = useCallback(async (tradeId: number) => {
     try {
       setError(null);
@@ -65,11 +70,11 @@ export const useTrades = () => {
     }
   }, []);
 
-  const closeTrade = useCallback(async (tradeId: number, motivoCierre: string) => {
+  // Cerrar trade
+  const closeTrade = useCallback(async (tradeId: number, motivo: string) => {
     try {
       setError(null);
-      const fechaCierre = new Date().toISOString();
-      const closedTrade = await tradeService.closeTrade(tradeId, motivoCierre);
+      const closedTrade = await tradeService.closeTrade(tradeId, motivo);
       setTrades(prev => prev.map(trade => 
         trade.id === tradeId ? closedTrade : trade
       ));
@@ -81,6 +86,20 @@ export const useTrades = () => {
     }
   }, []);
 
+  // Obtener trade específico
+  const getTrade = useCallback(async (tradeId: number) => {
+    try {
+      setError(null);
+      const trade = await tradeService.getTrade(tradeId);
+      return trade;
+    } catch (err) {
+      setError('Error al obtener el trade');
+      console.error('Error getting trade:', err);
+      throw err;
+    }
+  }, []);
+
+  // Recargar trades
   const refreshTrades = useCallback(() => {
     loadTrades();
   }, [loadTrades]);
@@ -93,6 +112,7 @@ export const useTrades = () => {
     updateTrade,
     deleteTrade,
     closeTrade,
+    getTrade,
     refreshTrades,
   };
 }; 

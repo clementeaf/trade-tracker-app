@@ -24,6 +24,8 @@ export const useTradeModal = (trades: Trade[], addTrade: (trade: Trade) => void)
       precioApertura: Number(form.precioApertura),
       takeProfit: Number(form.takeProfit),
       stopLoss: Number(form.stopLoss),
+      observaciones: form.observaciones,
+      imagenes: form.imagenes,
       fechaCierre: undefined,
       motivoCierre: undefined,
     }, nro);
@@ -58,8 +60,12 @@ export const useTradeModal = (trades: Trade[], addTrade: (trade: Trade) => void)
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     dispatch({ type: 'UPDATE_FORM', payload: { [e.target.name]: e.target.value } });
+  };
+
+  const handleImagesUploaded = (imageUrls: string[]) => {
+    dispatch({ type: 'UPDATE_FORM', payload: { imagenes: imageUrls } });
   };
 
   const openModal = () => dispatch({ type: 'OPEN_MODAL' });
@@ -69,6 +75,7 @@ export const useTradeModal = (trades: Trade[], addTrade: (trade: Trade) => void)
     state,
     handleSubmit,
     handleChange,
+    handleImagesUploaded,
     openModal,
     closeModal,
   };

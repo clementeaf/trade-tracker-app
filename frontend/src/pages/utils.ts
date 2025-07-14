@@ -23,7 +23,14 @@ export const initialTrades: Trade[] = [
   },
 ];
 
-export const initialForm = { par: '', precioApertura: '', takeProfit: '', stopLoss: '' };
+export const initialForm = { 
+  par: '', 
+  precioApertura: '', 
+  takeProfit: '', 
+  stopLoss: '', 
+  observaciones: '',
+  imagenes: [] as string[]
+};
 
 export const formFields = [
   { name: 'par', label: 'Par', type: 'text', required: true },

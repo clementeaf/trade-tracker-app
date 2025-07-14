@@ -5,6 +5,8 @@ import Layout from './components/layout/Layout';
 import Trades from './pages/Trades';
 import Estadisticas from './pages/Estadisticas';
 import Dashboard from './components/organisms/Dashboard';
+import { S3Test } from './pages/S3Test';
+import { S3TestAlova } from './pages/S3TestAlova';
 import { useTrades } from './hooks/useTrades';
 
 const App = () => {
@@ -18,6 +20,8 @@ const App = () => {
           <Route path="/trades" element={<Trades />} />
           <Route path="/estadisticas" element={<Estadisticas />} />
           <Route path="/dashboard" element={<Dashboard trades={trades} />} />
+          <Route path="/s3-test" element={<S3Test />} />
+          <Route path="/s3-test-alova" element={<S3TestAlova />} />
         </Routes>
       </Layout>
     </Router>
